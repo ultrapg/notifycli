@@ -15,6 +15,7 @@ A lightweight, portable, single-binary CLI tool for sending native desktop notif
 - Maximum Optimization: Compiled with LTO, opt-level "z", panic abort, and symbols stripped (~1.3 MB).
 - Zero File Footprint: Creates no temporary files, cache, or config files on your system.
 - Notification Pinning: `--pin` flag keeps a notification resident until dismissed by the user.
+- KDE Plasma Native Job Progress (Dolphin-style): `--job` mode reads progress percentages from `stdin` and reports to `org.kde.kuiserver` to render a true system-tray progress job.
 - Universal ASCII Progress Bar: Using `-p, --progress <0-100>` automatically renders a visual progress bar (`[███████████████░░░░░] 75%`) inside the notification body across all desktop environments (KDE Plasma, GNOME, Windows, Dunst, etc.).
 - Notification Updates & Progression:
   - `--print-id`: Outputs the notification ID to `stdout` when created.
@@ -66,6 +67,7 @@ notifycli [OPTIONS]
 | `--pin` | | Pin notification persistently until user dismisses it | `false` |
 | `--icon <ICON>` | `-i` | System icon name or file path | `None` |
 | `--progress <PERCENT>` | `-p` | Progress percentage (`0` to `100`), auto-appends ASCII bar | `None` |
+| `--job` | | Run as a long-running KDE JobView reading percentages from stdin (Linux only) | `false` |
 | `--no-bar` | | Disable automatic ASCII progress bar appending | `false` |
 | `--print-id` | | Print notification ID to stdout after sending | `false` |
 | `--replace-id <ID>` | `-r` | Replace / update existing notification by ID | `None` |
@@ -97,6 +99,12 @@ notifycli -s "Important Notice" -b "This notification stays pinned until closed.
 #### Single Progress Bar Notification
 ```bash
 notifycli -s "Downloading Archive" -b "Downloading files..." -p 75
+```
+
+#### Native KDE JobView Progress (Dolphin-style)
+Run `notifycli` with `--job` and pipe progress values to `stdin` to create a true KDE system tray progress job:
+```bash
+( for i in {0..100..5}; do echo $i; sleep 0.3; done ) | notifycli --job -s "Copying Files" -b "Transferring files to backup..." -i "folder-copy"
 ```
 
 ---
